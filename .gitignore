@@ -1,0 +1,23 @@
+.venv/
+/data/
+*.dbn.zst
+__pycache__/
+.env
+/outputs/
+
+# Time-300B pretraining data (large; keep out of git wherever it lives)
+Time-300B*/
+*.npy
+*.bin
+
+# model weights and checkpoints (all variants: time-aware and evenly spaced "_ticks"), wherever they are written
+outputs/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.pt.tmp
+.numba_cache/
+
+# a benchmark's in-progress state (results/ holds only finished figures, metrics and CSVs)
+partial_*

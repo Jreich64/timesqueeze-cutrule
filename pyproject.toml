@@ -1,0 +1,56 @@
+[project]
+name = "timesqueeze"
+version = "0.1.0"
+description = "CutRule bilevel segmentation and TimeSqueeze (Mamba + Transformer) on ORCL trades"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "torch>=2.9,<2.10",
+    "numpy",
+    "pandas",
+    "scipy",
+    "matplotlib",
+    "databento",
+    "mamba-ssm; sys_platform == 'linux'",
+    "causal-conv1d; sys_platform == 'linux'",
+    "huggingface-hub>=2.2.0",
+    "numba>=0.68.0",
+]
+
+[tool.uv]
+package = false
+
+# mamba-ssm / causal-conv1d only ship prebuilt CUDA wheels for Linux (torch 2.9, cu128).
+# They are skipped on Windows; run under WSL2/Linux to get them. See README.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu128" }]
+mamba-ssm = [{ url = "https://wheels.astral.sh/artifacts/70a237d5bfa3f68e9060f96c2dbc06736f1917c43dc5ac3044877ff6cf82635f/mamba_ssm-2.3.2.post1+cu.12.8.torch.2.9-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", marker = "sys_platform == 'linux'" }]
+causal-conv1d = [{ url = "https://wheels.astral.sh/artifacts/3795a4536ccd506b87a6762615debfcdd62cd99bca2fa4c43fd0bd341c97a73d/causal_conv1d-1.6.2.post1+cu.12.8.torch.2.9-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-timeout>=2.4.0",
+    "pytest-xdist>=3.8.0",
+    "ruff>=0.17.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "tests"]
+markers = ["slow: end-to-end quick-mode pipeline runs (minutes each); skip with -m \"not slow\""]
+
+[tool.ruff]
+line-length = 125
+indent-width = 2
+
+[tool.ruff.lint]
+select = ["F", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["timesqueeze"]
+
